@@ -8,3 +8,15 @@ export async function getItems() {
   const payload = await response.json();
   return payload.items;
 }
+
+export async function ingestItem(input) {
+  const response = await fetch('/api/ingest', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(input),
+  });
+  const payload = await response.json();
+
+  if (!response.ok) throw new Error(payload.error ?? 'Content could not be saved.');
+  return payload;
+}

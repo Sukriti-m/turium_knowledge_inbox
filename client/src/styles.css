@@ -17,3 +17,12 @@ h1 { margin: .25rem 0; font-size: clamp(2rem, 6vw, 3rem); }
 .item-list { display: grid; gap: .75rem; list-style: none; margin: 0; padding: 0; }
 .item-list li { border-top: 1px solid #dbe2ea; padding-top: .75rem; }
 .item-list p { color: #526273; margin-bottom: 0; }
+form { display: grid; gap: 1rem; }
+textarea, input { border: 1px solid #b9c4d0; border-radius: 8px; color: inherit; font: inherit; padding: .75rem; width: 100%; }
+textarea { resize: vertical; }
+.type-picker { display: flex; gap: .5rem; }
+.type-picker button, .primary-button { border: 1px solid #9ba9b8; border-radius: 7px; cursor: pointer; font: inherit; padding: .5rem .8rem; }
+.type-picker button { background: #fff; }
+.type-picker .selected, .primary-button { background: #18222f; border-color: #18222f; color: #fff; }
+.primary-button { justify-self: start; }
+.primary-button:disabled { cursor: wait; opacity: .65; }
