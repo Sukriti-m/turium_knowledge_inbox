@@ -1,7 +1,9 @@
 import cors from 'cors';
 import express from 'express';
+import { errorHandler, notFoundHandler } from './lib/errors.js';
+import { createItemsRouter } from './routes/items.js';
 
-export function createApp() {
+export function createApp({ itemRepository }) {
   const app = express();
 
   app.use(cors({ origin: process.env.CLIENT_ORIGIN ?? 'http://localhost:5173' }));
@@ -10,6 +12,10 @@ export function createApp() {
   app.get('/api/health', (_request, response) => {
     response.json({ status: 'ok' });
   });
+
+  app.use('/api/items', createItemsRouter(itemRepository));
+  app.use(notFoundHandler);
+  app.use(errorHandler);
 
   return app;
 }

@@ -13,3 +13,7 @@ h1 { margin: .25rem 0; font-size: clamp(2rem, 6vw, 3rem); }
 .panel { background: #fff; border: 1px solid #dbe2ea; border-radius: 12px; margin-top: 2.5rem; padding: 1.5rem; }
 .panel h2 { margin-top: 0; }
 .status { color: #526273; font-size: .9rem; }
+.error-message { color: #b42318; }
+.item-list { display: grid; gap: .75rem; list-style: none; margin: 0; padding: 0; }
+.item-list li { border-top: 1px solid #dbe2ea; padding-top: .75rem; }
+.item-list p { color: #526273; margin-bottom: 0; }
