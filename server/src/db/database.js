@@ -28,10 +28,16 @@ export function openDatabase(databasePath = process.env.DATABASE_PATH ?? default
       content TEXT NOT NULL,
       position INTEGER NOT NULL,
       embedding TEXT,
+      embedding_model TEXT,
       created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
       UNIQUE (item_id, position)
     );
   `);
+
+  const chunkColumns = database.prepare('PRAGMA table_info(chunks)').all();
+  if (!chunkColumns.some((column) => column.name === 'embedding_model')) {
+    database.exec('ALTER TABLE chunks ADD COLUMN embedding_model TEXT');
+  }
 
   return database;
 }

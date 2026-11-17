@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { getItems, ingestItem } from './api.js';
+import { getItems, ingestItem, queryInbox } from './api.js';
 
 export function App() {
   const [items, setItems] = useState([]);
@@ -8,6 +8,10 @@ export function App() {
   const [content, setContent] = useState('');
   const [saveState, setSaveState] = useState('idle');
   const [saveError, setSaveError] = useState('');
+  const [question, setQuestion] = useState('');
+  const [queryState, setQueryState] = useState('idle');
+  const [queryError, setQueryError] = useState('');
+  const [answer, setAnswer] = useState(null);
 
   useEffect(() => {
     getItems()
@@ -34,6 +38,21 @@ export function App() {
     } catch (error) {
       setSaveError(error.message);
       setSaveState('idle');
+    }
+  }
+
+  async function handleQuestion(event) {
+    event.preventDefault();
+    setQueryState('asking');
+    setQueryError('');
+    setAnswer(null);
+
+    try {
+      setAnswer(await queryInbox(question));
+      setQueryState('idle');
+    } catch (error) {
+      setQueryError(error.message);
+      setQueryState('idle');
     }
   }
 
@@ -79,6 +98,38 @@ export function App() {
               </li>
             ))}
           </ul>
+        )}
+      </section>
+
+      <section className="panel" aria-labelledby="ask-heading">
+        <h2 id="ask-heading">Ask your inbox (Kindly wait for 10-15 sec for response) </h2>
+        <form onSubmit={handleQuestion}>
+          <textarea value={question} onChange={(event) => setQuestion(event.target.value)} placeholder="What should I verify before releasing?" rows="3" required />
+          {queryError && <p className="error-message">{queryError}</p>}
+          <button className="primary-button" type="submit" disabled={queryState === 'asking'}>
+            {queryState === 'asking' ? 'Searching...' : 'Ask question'}
+          </button>
+        </form>
+
+        {answer && (
+          <div className="answer" aria-live="polite">
+            <h3>Answer</h3>
+            <p>{answer.answer}</p>
+            {answer.sources.length > 0 && (
+              <>
+                <h3>Sources</h3>
+                <ol className="source-list">
+                  {answer.sources.map((source) => (
+                    <li key={source.chunkId}>
+                      <strong>{source.title}</strong>
+                      <p>{source.snippet}</p>
+                      {source.sourceUrl && <a href={source.sourceUrl} target="_blank" rel="noreferrer">Open source</a>}
+                    </li>
+                  ))}
+                </ol>
+              </>
+            )}
+          </div>
         )}
       </section>
     </main>

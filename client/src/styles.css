@@ -26,3 +26,7 @@ textarea { resize: vertical; }
 .type-picker .selected, .primary-button { background: #18222f; border-color: #18222f; color: #fff; }
 .primary-button { justify-self: start; }
 .primary-button:disabled { cursor: wait; opacity: .65; }
+.answer { border-top: 1px solid #dbe2ea; margin-top: 1.5rem; padding-top: 1rem; }
+.answer h3 { font-size: 1rem; margin-bottom: .4rem; }
+.source-list { display: grid; gap: .75rem; padding-left: 1.5rem; }
+.source-list p { color: #526273; margin: .3rem 0; }

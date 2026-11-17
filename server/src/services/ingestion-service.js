@@ -16,18 +16,19 @@ function createNoteTitle(content) {
   return normalizedTitle.length > 100 ? `${normalizedTitle.slice(0, 97)}...` : normalizedTitle;
 }
 
-export function createIngestionService(itemRepository) {
+export function createIngestionService(itemRepository, ragService) {
   return {
     async ingest(input) {
       if (!input || typeof input !== 'object') throw new AppError('A request body is required.', 400);
       if (input.type === 'note') {
         const rawContent = validateNoteContent(input.content);
         const chunks = chunkText(rawContent);
+        const embeddedChunks = await ragService.embedChunks(chunks);
         const item = itemRepository.create({
           sourceType: 'note',
           title: createNoteTitle(rawContent),
           rawContent,
-          chunks,
+          chunks: embeddedChunks,
         });
         return { item, chunkCount: chunks.length };
       }
@@ -35,8 +36,9 @@ export function createIngestionService(itemRepository) {
         if (typeof input.url !== 'string' || !input.url.trim()) throw new AppError('A URL is required.', 400);
         const page = await fetchPageContent(input.url.trim());
         const chunks = chunkText(page.text);
+        const embeddedChunks = await ragService.embedChunks(chunks);
         const item = itemRepository.create({
-          sourceType: 'url', sourceUrl: page.url, title: page.title, rawContent: page.text, chunks,
+          sourceType: 'url', sourceUrl: page.url, title: page.title, rawContent: page.text, chunks: embeddedChunks,
         });
         return { item, chunkCount: chunks.length };
       }
